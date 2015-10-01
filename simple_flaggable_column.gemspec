@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['zequez@gmail.com']
   spec.summary       = 'Simple binary flags columns'
   spec.description   = 'This gem adds a concern to allow you to use binary flags columns in ActiveRecord models'
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/Zequez/simple_flaggable_column'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
