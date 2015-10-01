@@ -1,6 +1,6 @@
 # SimpleFlaggableColumn
 
-Adds a really simple binary flag column to a model.
+Allows you to add really simple binary flag column to an ActiveRecord model.
 
 ## Installation
 
@@ -22,13 +22,13 @@ Or install it yourself as:
 
 Migration:
 
-```
+```ruby
 add_column(:games, :platforms, :integer, default: 0, null: false)
 ```
 
 Model:
 
-```
+```ruby
 class Game < ActiveRecord::Base
   include SimpleFlaggableColumn
 
@@ -42,7 +42,7 @@ end
 
 This redefines the `platforms` method in `Game` so you can set it and read it as an array:
 
-```
+```ruby
 game = Game.new
 game.platforms = [:win, :linux]
 # => [:win, :linux]
