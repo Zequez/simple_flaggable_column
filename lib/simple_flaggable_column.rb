@@ -29,7 +29,13 @@ module SimpleFlaggableColumn
       end
 
       define_method "#{name}=" do |symbols|
-        write_attribute name, SimpleFlaggableColumn.symbols_to_flags(symbols, symbols_flags)
+        if symbols.nil?
+          write_attribute name, 0
+        elsif symbols.kind_of? Array
+          write_attribute name, SimpleFlaggableColumn.symbols_to_flags(symbols, symbols_flags)
+        else # numeric, or anything else
+          write_attribute name, symbols
+        end
       end
 
       define_method name do

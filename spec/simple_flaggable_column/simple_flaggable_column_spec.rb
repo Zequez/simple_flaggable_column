@@ -33,23 +33,39 @@ describe SimpleFlaggableColumn do
     expect(game.platforms).to match_array [:mac, :linux]
   end
 
-  it 'should define the list of flags' do
-    expect(GameModel.platforms_flags).to eq({
-      win:   0b001,
-      mac:   0b010,
-      linux: 0b100
-    })
+  it 'should set the value to 0 when nil' do
+    game = GameModel.new
+    game.platforms = [:mac, :linux]
+    expect(game.platforms).to eq [:mac, :linux]
+    game.platforms = nil
+    expect(game.platforms).to eq []
   end
 
-  it 'should let you get a join list of flags' do
-    expect(GameModel.platforms_flags(:win, :linux)).to eq 0b101
+  it 'should allow you to set numeric values directly' do
+    game = GameModel.new
+    game.platforms = 0b101
+    expect(game.platforms).to eq [:win, :linux]
   end
 
-  it 'should define the reverse list of flags' do
-    expect(GameModel.flags_platforms).to eq({
-      0b001 => :win,
-      0b010 => :mac,
-      0b100 => :linux
-    })
+  describe 'flags lists' do
+    it 'should define the list of flags' do
+      expect(GameModel.platforms_flags).to eq({
+        win:   0b001,
+        mac:   0b010,
+        linux: 0b100
+      })
+    end
+
+    it 'should let you get a join list of flags' do
+      expect(GameModel.platforms_flags(:win, :linux)).to eq 0b101
+    end
+
+    it 'should define the reverse list of flags' do
+      expect(GameModel.flags_platforms).to eq({
+        0b001 => :win,
+        0b010 => :mac,
+        0b100 => :linux
+      })
+    end
   end
 end
