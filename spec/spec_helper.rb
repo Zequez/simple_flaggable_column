@@ -1,12 +1,10 @@
 require 'simple_flaggable_column'
-require 'with_model'
+require 'active_record'
 
 ActiveRecord::Base.establish_connection adapter: 'sqlite3', database: ':memory:'
 ActiveRecord::Migration.verbose = false
 
 RSpec.configure do |config|
-  config.extend WithModel
-
   config.expect_with :rspec do |expectations|
     # Default in RSpec 4
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
