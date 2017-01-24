@@ -54,6 +54,38 @@ game.read_attribute(:platforms).to_s(2)
 
 Push/Pop and other arrays operations won't work, just simple writing and reading.
 
+### :throw_on_missing
+
+If you try to set a non-existing flag it will throw an ArgumentError
+
+```ruby
+game = Game.new
+game.platforms = [:potato]
+# => <ArgumentError: Flag potato doesn't exists>
+```
+
+To disable this and silently ignore invalid flags define the flags with :throw_on_missing set to false:
+
+```ruby
+class Game < ActiveRecord::Base
+  include SimpleFlaggableColumn
+
+  flag_column :platforms, {
+    win:   0b001,
+    mac:   0b010,
+    linux: 0b100
+  }, throw_on_missing: false
+end
+```
+
+Now invalid flags will be ignored
+
+```ruby
+game = Game.new
+game.platforms = [:win, :potato]
+# => [:win]
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/Zequez/simple_flaggable_column/fork )

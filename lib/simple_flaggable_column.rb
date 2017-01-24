@@ -4,8 +4,13 @@ require 'simple_flaggable_column/version'
 module SimpleFlaggableColumn
   extend ActiveSupport::Concern
 
-  def self.symbols_to_flags(symbols, symbols_flags)
-    symbols.map{|s| symbols_flags[s]}.compact.reduce(:|) || 0
+  def self.symbols_to_flags(symbols, symbols_flags, throw_on_missing = true)
+    symbols.map do |s|
+      if throw_on_missing && !symbols_flags[s]
+        throw ArgumentError.new("Flag #{s} doesn't exists")
+      end
+      symbols_flags[s]
+    end.compact.reduce(:|) || 0
   end
 
   def self.flags_to_symbols(flags, symbols_flags)
@@ -13,14 +18,22 @@ module SimpleFlaggableColumn
   end
 
   module ClassMethods
-    def flag_column(name, symbols_flags)
+    def flag_column(name, symbols_flags, options = {})
+      options = {
+        throw_on_missing: true
+      }.merge(options)
+
       flags_symbols = symbols_flags.invert
 
       define_singleton_method :"#{name}_flags" do |*symbols|
         if symbols.empty?
           symbols_flags
         else
-          SimpleFlaggableColumn.symbols_to_flags(symbols, symbols_flags)
+          SimpleFlaggableColumn.symbols_to_flags(
+            symbols,
+            symbols_flags,
+            options[:throw_on_missing]
+          )
         end
       end
 
@@ -32,7 +45,11 @@ module SimpleFlaggableColumn
         if symbols.nil?
           write_attribute name, 0
         elsif symbols.kind_of? Array
-          write_attribute name, SimpleFlaggableColumn.symbols_to_flags(symbols, symbols_flags)
+          write_attribute name, SimpleFlaggableColumn.symbols_to_flags(
+            symbols,
+            symbols_flags,
+            options[:throw_on_missing]
+          )
         else # numeric, or anything else
           write_attribute name, symbols
         end
